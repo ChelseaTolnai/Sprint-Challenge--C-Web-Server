@@ -58,8 +58,8 @@ urlinfo_t *parse_url(char *url)
   path = slash + 1;
   *slash = '\0';
 
-  char *colon = strchr(hostname, ':');
-  port = colon +1;
+  char *colon = strchr(hostname, ':') ? strchr(hostname, ':') : strdup(":80");
+  port = colon + 1;
   *colon = '\0';
 
   urlinfo->hostname = hostname;
@@ -122,9 +122,6 @@ int main(int argc, char *argv[])
     5. Clean up any allocated memory and open file descriptors.
   */
 
-  ///////////////////
-  // IMPLEMENT ME! //
-  ///////////////////
   urlinfo_t *urlinfo = parse_url(argv[1]);
   sockfd = get_socket(urlinfo->hostname, urlinfo->port);
   send_request(sockfd, urlinfo->hostname, urlinfo->port, urlinfo->path);
