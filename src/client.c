@@ -100,8 +100,8 @@ int send_request(int fd, char *hostname, char *port, char *path)
   if (rv < 0) {
       perror("send");
   }
-  
-  return rv;
+
+  return 0;
 }
 
 int main(int argc, char *argv[])
@@ -128,6 +128,11 @@ int main(int argc, char *argv[])
   urlinfo_t *urlinfo = parse_url(argv[1]);
   sockfd = get_socket(urlinfo->hostname, urlinfo->port);
   send_request(sockfd, urlinfo->hostname, urlinfo->port, urlinfo->path);
+
+  while ((numbytes = recv(sockfd, buf, BUFSIZE - 1, 0)) > 0) {
+    buf[numbytes] = '\0';
+    fprintf(stdout, "%s\n", buf);
+  }
 
   return 0;
 }
