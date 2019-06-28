@@ -85,11 +85,23 @@ int send_request(int fd, char *hostname, char *port, char *path)
   char request[max_request_size];
   int rv;
 
-  ///////////////////
-  // IMPLEMENT ME! //
-  ///////////////////
+  int request_length = sprintf(request,
+    "GET /%s HTTP/1.1\n"
+    "Host: %s:%s\n"
+    "Connection: close\n"
+    "\n",
+    path, 
+    hostname, 
+    port
+  );
 
-  return 0;
+  rv = send(fd, request, request_length, 0);
+
+  if (rv < 0) {
+      perror("send");
+  }
+  
+  return rv;
 }
 
 int main(int argc, char *argv[])
@@ -114,9 +126,8 @@ int main(int argc, char *argv[])
   // IMPLEMENT ME! //
   ///////////////////
   urlinfo_t *urlinfo = parse_url(argv[1]);
-  printf("host: %s\n", urlinfo->hostname);
-  printf("path: %s\n", urlinfo->path);
-  printf("port: %s\n", urlinfo->port);
+  sockfd = get_socket(urlinfo->hostname, urlinfo->port);
+  send_request(sockfd, urlinfo->hostname, urlinfo->port, urlinfo->path);
 
   return 0;
 }
